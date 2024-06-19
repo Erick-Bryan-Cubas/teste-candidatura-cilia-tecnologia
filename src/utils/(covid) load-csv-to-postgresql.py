@@ -96,5 +96,5 @@ if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.abspath(__file__))
     # csv_file_path = os.path.join(base_dir, '..', 'airflow', 'data', 'file.csv')
     # csv_file_path = os.path.join(base_dir, '..', 'Dataset-2', 'file-minimal-data.csv')
-    csv_file_path = os.path.join(base_dir, '..', 'Dataset-2', 'file.csv')
+    csv_file_path = os.path.join(base_dir, '..','..', 'Dataset-2', 'file.csv')
     load_csv_to_postgres(csv_file_path)

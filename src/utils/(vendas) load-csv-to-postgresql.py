@@ -4,7 +4,8 @@ import psycopg2
 from sqlalchemy import create_engine
 
 # Definindo constantes e caminhos
-BASE_PATH = r'C:\Users\Erick Bryan\Documents\GitHub\teste-candidatura-cilia-tecnologia\Dataset-1'
+base_dir = os.path.dirname(os.path.abspath(__file__))
+BASE_PATH = os.path.join(base_dir, '..','..', 'Dataset-1')
 DB_URL = 'postgresql+psycopg2://postgres:trojan19@localhost:5432/cilia-tecnologia'
 DB_PARAMS = {
     'dbname': 'cilia-tecnologia',
@@ -13,6 +14,10 @@ DB_PARAMS = {
     'host': 'localhost',
     'port': '5432'
 }
+
+files = os.listdir(BASE_PATH)
+print("Arquivos no diretório Dataset-1:")
+print(files)
 
 # Função para carregar os dados
 def load_data(file_name):
