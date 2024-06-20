@@ -1,73 +1,162 @@
-# Teste de Candidatura - Cientista de Dados
+# Projeto de Ciência de Dados - Cilia Tecnologia
 
-## Instruções Gerais
+## Visão Geral
 
-- Execute de preferência no Google Colab.
-- Para cada questão, mostre os códigos e as respostas em seguida.
-- Para questões teóricas, responda no notebook mesmo.
-- Documente o processo de análise, incluindo todas as etapas de pré-processamento, análise e modelagem.
+Este repositório contém as soluções e análises para o desafio de ciência de dados fornecido pela Cilia Tecnologia. O projeto está organizado em duas partes principais com base em dois conjuntos de dados e inclui notebooks Jupyter para análise de dados, consultas SQL e uma configuração do Airflow para pipelines de dados.
 
-## Dataset 1
+## Introdução
 
-### Questões
+### Pré-requisitos
 
-1. **Explique o que você entendeu de cada tabela e a relação entre elas.**
+- Docker e Docker Compose instalados em sua máquina.
+- Jupyter Notebook ou Google Colab para executar os notebooks de análise.
 
-2. **Escreva uma query SQL para encontrar os três produtos mais vendidos em termos de quantidade na tabela `sales`.**
+### Executando o Projeto
 
-3. **Escreva uma query SQL para calcular o lucro total por região.**
+#### Configuração do Airflow
 
-4. **Descreva como você implementaria um processo de ETL para carregar dados de um sistema legado para um data warehouse moderno.**
+1. Navegue até o diretório `src/airflow`:
 
-5. **Quais análises devem ser feitas nos dados fornecidos para pré-processamento? Descreva cada passo e demonstre em Python.**
+    ```sh
+    cd airflow
+    ```
 
-6. **Calcule o total de vendas (`SalesAmount`) e o lucro por ano e por região.**
+2. Inicie os serviços do Airflow usando Docker Compose:
 
-7. **Adicione uma coluna na tabela `Sales` com a classificação dos clientes em segmentos de alta, média e baixa lucratividade com base no lucro total gerado.**
+    ```sh
+    docker-compose up
+    ```
 
-8. **Qual seria o impacto esperado no lucro se o desconto médio fosse reduzido em 10%? Explique sua abordagem e resultados.**
+3. Acesse a interface web do Airflow em `http://localhost:8080`.
 
-9. **Utilizando modelagem preditiva, qual será a lucratividade futura das vendas?**
+### Notebooks
 
-## Dataset 2
+- A análise para o Dataset 1 pode ser encontrada nos seguintes notebooks:
+  - `src/notebooks/analysis-dataset-1.ipynb`
+  - `src/notebooks/anl_dataset_1_google_colab.ipynb` (Google Colab)
+  - [Notebook Google Colab](https://colab.research.google.com/drive/1bxm7izkbt8qt3293fT7Z2fthqYoLYRbe?usp=sharing)
+- A análise para o Dataset 2 está em `src/notebooks/analysis-dataset-2.ipynb`.
 
-### Questões
+## DAGs do Airflow
 
-10. **Construa duas DAGs Airflow para uma data pipeline com as seguintes tarefas:**
+### Descrição das DAGs
 
-    - Acesso a uma instância remota.
-    - Extração do banco de dados da instância remota.
-    - Transformação dos dados localmente.
-    - Envio de relatórios.
-    - Configure o envio de um alerta caso a execução não seja executada corretamente duas vezes, com um intervalo de 5 minutos entre as execuções.
-    
-    As DAGs devem ser separadas em parte remota e local, sendo todas as etapas baseadas em eventos (com inicialização da segunda DAG baseada no término da primeira). Considere que a extração de banco de dados e a transformação de dados já estão prontos, nos seguintes arquivos: `extract.py`, `transform.py`, e `send.py`, e suas respectivas dependências `req1.txt`, `req2.txt`, `req3.txt`.
+- **local_dag**: Executa uma sequência de tarefas envolvendo extração, transformação e carregamento (ETL) de dados localmente usando scripts Python.
+- **remote_dag**: Consulta dados de um banco de dados PostgreSQL remoto e registra os resultados.
 
-11. **Elabore um ranking com as 20 maiores variações diárias de novos casos de covid. Neste ranking deve constar três colunas:**
+### Executando as DAGs
 
-    - A data dessa variação.
-    - A lista de cidades distintas.
-    - Variação dos casos.
-    
-    Verifique se o arquivo `code.ipynb` cumpre esses requisitos da melhor forma possível. Caso negativo, apresente o novo código.
+Para executar as DAGs, certifique-se de que o Airflow está em execução e acesse a interface web do Airflow. Acione as DAGs manualmente a partir da interface.
 
-12. **Faça uma análise exploratória sobre os dados de covid e apresente gráficos representativos e insights relevantes.**
+## Perguntas do Desafio e Soluções
 
-13. **Em um projeto de treinamento de modelos de deep learning, a parte da anotação de dados é crucial para garantir um bom desempenho do modelo. Você está em um projeto de visão computacional cujas imagens anotadas são segmentações que estão sobre determinadas peças, por exemplo: parabrisa. Quais estratégias você utilizaria para minimizar possíveis erros de anotações?**
+### Dataset 1
 
-# Respostas
+1. **Explicação das Tabelas e Relações**: Análise detalhada e explicação fornecida no notebook `analysis-dataset-1.ipynb`.
+2. **Consulta SQL - Top 3 Produtos Mais Vendidos**:
 
-## Dataset 1
+- No SQLite:
 
-As respostas do primeiro dataset estão no arquivo `src\notebooks\analysis-dataset-1.ipynb` e também `src\notebooks\anl_dataset_1_google_colab.ipynb` (Google Colab). Caso queira acessar no Google Colab, clique [aqui](https://colab.research.google.com/drive/1bxm7izkbt8qt3293fT7Z2fthqYoLYRbe?usp=sharing).
+    ```sql
+    SELECT 
+    Sales.ProductKey AS ProductKey,
+    Product.ProductName AS Product,
+    SUM(OrderQuantity) AS TotalQuantity
+    FROM Sales
+    INNER JOIN Product ON Product.ProductKey = Sales.ProductKey
+    GROUP BY Sales.ProductKey, Product.ProductName 
+    ORDER BY TotalQuantity DESC
+    LIMIT 3;
+    ```
 
-## Dataset 2
-Já as respostas do segundo dataset estão no arquivo `src\notebooks\analysis-dataset-2.ipynb` e a aplicação do Airflow está no diretório `src\airflow`.
+- No PostgreSQL:
 
-## Considerações Finais
+    ```sql
+    SELECT
+    Sales."ProductKey" AS ProductKey,
+    Product."ProductName" AS Product,
+    SUM("OrderQuantity") AS TotalQuantity
+    FROM Sales
+    INNER JOIN Product ON Product."ProductKey" = Sales."ProductKey"
+    GROUP BY Sales."ProductKey", Product."ProductName"
+    ORDER BY TotalQuantity DESC
+    LIMIT 3;
+    ```
 
-- O projeto foi desenvolvido em Jupyter Notebook, Python, SQL (SQLite e PostgreSQL), Airflow, Bash e Docker.
+3. **Consulta SQL - Lucro Total por Região**:
 
+Segue o código para calcular o lucro total por região:
 
-# Autor
-- [Erick Bryan Cubas](https://www.linkedin.com/in/the-bryan/)
+- No SQLite:
+
+    ```sql
+    SELECT 
+    Sales.ProductKey AS ProductKey,
+    Product.ProductName AS Product,
+    SUM(OrderQuantity) AS TotalQuantity
+    FROM Sales
+    INNER JOIN Product ON Product.ProductKey = Sales.ProductKey
+    GROUP BY Sales.ProductKey, Product.ProductName 
+    ORDER BY TotalQuantity DESC
+    LIMIT 3;
+    ```
+
+- No PostgreSQL:
+
+    ```sql
+    SELECT
+        t."Region",
+        to_char(SUM(s."SalesAmount" - s."TotalProductCost"), 'FM999999999.00') AS TotalProfit
+    FROM
+        sales s
+    JOIN
+        territory t ON s."SalesTerritoryKey" = t."SalesTerritoryKey"
+    GROUP BY
+        t."Region"
+    ORDER BY
+        SUM(s."SalesAmount" - s."TotalProductCost") DESC;
+    ```
+
+4. **Implementação do Processo ETL**: Descrito no notebook com uma explicação passo a passo e código Python.
+
+5. **Etapas de Pré-processamento**: Detalhadas no notebook com código Python para cada etapa.
+
+6. **Total de Vendas e Lucro por Ano e Região**: Código Python detalhado no notebook e consulta SQL abaixo:
+
+- No PostgreSQL:
+
+    ```sql
+    SELECT 
+        DATE_PART('year', TO_TIMESTAMP("OrderDate", 'MM/DD/YY HH24:MI')) AS Year,
+        "SalesTerritoryKey" AS Region,
+        SUM("SalesAmount") AS TotalSales,
+        SUM("SalesAmount" - "TotalProductCost") AS Profit
+    FROM 
+        sales
+    GROUP BY 
+        Year, Region
+    ORDER BY 
+        Year, Region;
+    ```
+
+7. **Segmentação de Clientes**: Adicionada uma nova coluna na tabela `Sales` baseada em segmentos de lucratividade.
+
+8. **Impacto da Redução do Desconto**: Análise e resultados fornecidos no notebook.
+
+9. **Modelagem Preditiva**: Previsões de lucratividade futura usando modelos de machine learning detalhadas no notebook.
+
+### Dataset 2
+
+10. **DAGs do Airflow para Pipeline de Dados**: Implementadas e descritas em `airflow\dags\local_dag.py` e `airflow\dags\remote_dag.py`.
+
+11. **Top 20 Variações Diárias nos Casos de COVID**: Análise e ranking fornecidos em `analysis-dataset-2.ipynb`.
+
+12. **Análise Exploratória dos Dados de COVID**: Insights e visualizações incluídos no notebook.
+
+13. **Estratégias para Anotação de Dados**: Discussões no notebook, focando em minimizar erros em projetos de deep learning.
+
+## Conclusão
+
+Este projeto demonstra a aplicação de técnicas de ciência e engenharia de dados para resolver problemas do mundo real. As análises, consultas SQL e DAGs do Airflow mostram a capacidade de lidar e processar grandes conjuntos de dados de forma eficaz. Desenvolvi utilizando Jupyter Notebook, Python, SQL (SQLite e PostgreSQL), Airflow, Bash e Docker.
+
+Para quaisquer dúvidas ou mais informações, por favor, entre em contato pelo e-mail [datasageanalytics@gmail.com] ou pelo LinkedIn [Erick Bryan Cubas](https://www.linkedin.com/in/the-bryan/)
