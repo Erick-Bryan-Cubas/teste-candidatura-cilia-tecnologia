@@ -26,6 +26,7 @@ def query_covid_data():
             logging.info(row)
         cur.close()
         conn.close()
+        logging.info("Query executed successfully")
     except Exception as e:
         logging.error(f"Error querying data from PostgreSQL: {e}")
 
