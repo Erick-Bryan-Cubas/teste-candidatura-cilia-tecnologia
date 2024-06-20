@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "teste-candidatura-cilia-tecnologia"
+version = "1.0.0"
+description = "\"Este projeto contém a resolução do teste de candidatura para a vaga de Cientista de Dados na Cilia Tecnologia.\""
+authors = ["Erick Bryan Cubas <thecubas@outlook.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.2.2"
+psycopg2-binary = "^2.9.9"
+SQLAlchemy = "^2.0.31"
+scikit-learn = "^1.5.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
