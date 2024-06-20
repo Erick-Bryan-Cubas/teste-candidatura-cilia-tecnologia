@@ -1,9 +1,14 @@
 import pandas as pd
 
-# Código para transformar os dados
-df = pd.read_csv('/opt/airflow/data/extracted_data.csv')
+def transform_data():
+    # Leia os dados extraídos
+    df = pd.read_csv('/opt/airflow/data/extracted_data.csv')
 
-# Exemplo de transformação
-df['new_column'] = df['some_column'].apply(lambda x: x * 2)
+    # Exemplo de transformação: adicionar uma nova coluna
+    df['new_column'] = df['last_available_confirmed'].apply(lambda x: x * 2)
 
-df.to_csv('/opt/airflow/data/transformed_data.csv', index=False)
+    # Salve os dados transformados em um novo arquivo CSV
+    df.to_csv('/opt/airflow/data/transformed_data.csv', index=False)
+
+if __name__ == "__main__":
+    transform_data()

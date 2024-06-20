@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   postgres:
     image: postgres:latest
@@ -10,6 +10,10 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 2g
 
   webserver:
     image: apache/airflow:2.2.3
@@ -29,6 +33,10 @@ services:
       - ./scripts:/opt/airflow/scripts
       - ./requirements:/requirements
       - ./entrypoint.sh:/entrypoint.sh
+    deploy:
+      resources:
+        limits:
+          memory: 4g
     ports:
       - "8080:8080"
     entrypoint: ["/bin/bash", "/entrypoint.sh"]
@@ -50,7 +58,27 @@ services:
       - ./data:/opt/airflow/data
       - ./scripts:/opt/airflow/scripts
       - ./requirements:/requirements
+    deploy:
+      resources:
+        limits:
+          memory: 4g
     command: ["scheduler"]
+
+  data_loader:
+    image: python:3.8
+    depends_on:
+      - postgres
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+    volumes:
+      - ./scripts:/opt/airflow/scripts
+      - ./requirements:/requirements
+      - ./data:/opt/airflow/data
+    entrypoint: ["/bin/bash", "-c", "pip install -r /requirements/requirements.txt && python /opt/airflow/scripts/load_csv_to_postgres_airflow.py"]
+    deploy:
+      resources:
+        limits:
+          memory: 2g
 
 volumes:
   postgres_data:

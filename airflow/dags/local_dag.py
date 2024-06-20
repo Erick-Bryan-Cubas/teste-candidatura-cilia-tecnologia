@@ -21,6 +21,11 @@ with DAG(
 
     start_task = DummyOperator(task_id='start')
 
+    extract_task = BashOperator(
+        task_id='extract_data',
+        bash_command='python /opt/airflow/scripts/extract.py',
+    )
+
     transform_task = BashOperator(
         task_id='transform_data',
         bash_command='python /opt/airflow/scripts/transform.py',
@@ -31,4 +36,4 @@ with DAG(
         bash_command='python /opt/airflow/scripts/send.py',
     )
 
-    start_task >> transform_task >> send_task
+    start_task >> extract_task >> transform_task >> send_task

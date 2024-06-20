@@ -1,13 +1,33 @@
 from airflow import DAG
-from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 from datetime import timedelta
+import psycopg2
+import logging
 
 default_args = {
     'owner': 'airflow',
     'retries': 2,
     'retry_delay': timedelta(minutes=5),
 }
+
+def query_covid_data():
+    try:
+        conn = psycopg2.connect(
+            host='postgres',
+            dbname='airflow',
+            user='airflow',
+            password='airflow'
+        )
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM covid_data LIMIT 5;")
+        rows = cur.fetchall()
+        for row in rows:
+            logging.info(row)
+        cur.close()
+        conn.close()
+    except Exception as e:
+        logging.error(f"Error querying data from PostgreSQL: {e}")
 
 with DAG(
     'remote_dag',
@@ -18,14 +38,10 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    extract_task = BashOperator(
-        task_id='extract_data',
-        bash_command='python /opt/airflow/scripts/extract.py',
+    query_task = PythonOperator(
+        task_id='query_covid_data',
+        python_callable=query_covid_data,
+        execution_timeout=timedelta(minutes=5)
     )
 
-    load_csv_to_postgres = BashOperator(
-        task_id='load_csv_to_postgres',
-        bash_command='python /opt/airflow/scripts/load_csv_to_postgres_airflow.py',
-    )
-
-    extract_task >> load_csv_to_postgres
+    query_task
