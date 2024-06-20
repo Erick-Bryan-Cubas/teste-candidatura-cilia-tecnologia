@@ -54,3 +54,20 @@
 12. **Faça uma análise exploratória sobre os dados de covid e apresente gráficos representativos e insights relevantes.**
 
 13. **Em um projeto de treinamento de modelos de deep learning, a parte da anotação de dados é crucial para garantir um bom desempenho do modelo. Você está em um projeto de visão computacional cujas imagens anotadas são segmentações que estão sobre determinadas peças, por exemplo: parabrisa. Quais estratégias você utilizaria para minimizar possíveis erros de anotações?**
+
+# Respostas
+
+## Dataset 1
+
+As respostas do primeiro dataset estão no arquivo `src\notebooks\analysis-dataset-1.ipynb` e também `src\notebooks\anl_dataset_1_google_colab.ipynb` (Google Colab). Caso queira acessar no Google Colab, clique [aqui](https://colab.research.google.com/drive/1bxm7izkbt8qt3293fT7Z2fthqYoLYRbe?usp=sharing).
+
+## Dataset 2
+Já as respostas do segundo dataset estão no arquivo `src\notebooks\analysis-dataset-2.ipynb` e a aplicação do Airflow está no diretório `src\airflow`.
+
+## Considerações Finais
+
+- O projeto foi desenvolvido em Jupyter Notebook, Python, SQL (SQLite e PostgreSQL), Airflow, Bash e Docker.
+
+
+# Autor
+- [Erick Bryan Cubas](https://www.linkedin.com/in/the-bryan/)
