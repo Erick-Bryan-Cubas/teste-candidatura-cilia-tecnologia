@@ -1,6 +1,10 @@
 # Directory with data
-Dataset-1
-Dataset-2
+Dataset-1/Calendar.csv
+Dataset-1/Custumers.csv
+Dataset-1/Product.csv
+Dataset-1/Sales.csv
+Dataset-1/Territory.csv
+Dataset-2/file.csv
 
 # Data directory for airflow
 airflow/data/file.csv

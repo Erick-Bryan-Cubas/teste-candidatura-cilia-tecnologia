@@ -11,11 +11,18 @@ Este repositório contém as soluções e análises para o desafio de ciência d
 - Docker e Docker Compose instalados em sua máquina.
 - Jupyter Notebook ou Google Colab para executar os notebooks de análise.
 
+### Preparação dos Dados
+
+Para executar os notebooks, é necessário descompactar os arquivos de dados:
+
+- Para o **Dataset 1**, descompacte `src/data/Dataset-1.7z` no diretório `src/data/Dataset-1`.
+- Para o **Dataset 2**, descompacte `src/data/Dataset-2.7z` no diretório `src/data/Dataset-2`.
+
 ### Executando o Projeto
 
 #### Configuração do Airflow
 
-1. Navegue até o diretório `src/airflow`:
+1. Navegue até o diretório `airflow`:
 
     ```sh
     cd airflow
