@@ -10,10 +10,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    deploy:
-      resources:
-        limits:
-          memory: 2g
 
   webserver:
     image: apache/airflow:2.2.3
@@ -75,10 +71,6 @@ services:
       - ./requirements:/requirements
       - ./data:/opt/airflow/data
     entrypoint: ["/bin/bash", "-c", "pip install -r /requirements/requirements.txt && python /opt/airflow/scripts/load_csv_to_postgres_airflow.py"]
-    deploy:
-      resources:
-        limits:
-          memory: 2g
 
 volumes:
   postgres_data:

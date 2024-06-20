@@ -11,6 +11,7 @@ db_name = 'airflow'
 db_user = 'airflow'
 db_password = 'airflow'
 logger.info("Starting Data Load")
+
 def clean_value(value):
     if value == '':
         return None
@@ -29,6 +30,11 @@ def fill_and_concat_city_state(reader):
 
 def load_csv_to_postgres(csv_file_path):
     try:
+        # Verificar se o arquivo existe
+        logger.info("Checking if CSV file exists at %s", csv_file_path)
+        with open(csv_file_path, 'r', encoding='utf-8') as f:
+            logger.info("CSV file found")
+        
         # Conecte ao banco de dados
         conn = psycopg2.connect(
             host=db_host,
@@ -95,6 +101,7 @@ def load_csv_to_postgres(csv_file_path):
                     """, batch)
                     conn.commit()
                     batch = []
+                    logger.info("Batch inserted")
 
             if batch:
                 cur.executemany("""
@@ -115,10 +122,14 @@ def load_csv_to_postgres(csv_file_path):
         conn.close()
         logger.info("CSV loaded into PostgreSQL successfully")
 
+    except FileNotFoundError as e:
+        logger.error("CSV file not found: %s", e)
     except psycopg2.Error as e:
         logger.error("Error loading CSV to PostgreSQL: %s", e)
+    except Exception as e:
+        logger.error("Unexpected error: %s", e)
 
 if __name__ == "__main__":
-    csv_file_path = '/opt/airflow/data/file.csv'
-    # csv_file_path = '/opt/airflow/data/file-minimal-data.csv'
+    #csv_file_path = '/opt/airflow/data/file.csv'
+    csv_file_path = '/opt/airflow/data/file-minimal-data.csv'
     load_csv_to_postgres(csv_file_path)
